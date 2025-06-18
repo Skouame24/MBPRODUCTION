@@ -1,15 +1,61 @@
 'use client';
 
+import { useState } from 'react';
 import { Mail, MapPin, Music2, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import AnimatedSection from './components/AnimatedSection';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
+import FormationModal from './components/FormationModal';
+import { Toaster } from 'sonner';
+
+interface Formation {
+  title: string;
+  price: string;
+  details: string[];
+}
 
 export default function Home() {
+  const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const formations: Formation[] = [
+    {
+      title: 'Formation Musicale',
+      price: '135.000 Frcfa',
+      details: ['Inscription: 15.000 Frcfa', '6 mois: 20.000 Frcfa/Mois'],
+    },
+    {
+      title: 'Formation Orchestration',
+      price: '30.000 Frcfa',
+      details: ['Inscription: 30.000 Frcfa', '1 Mois'],
+    },
+    {
+      title: 'Formation Solfège',
+      price: '95.000 Frcfa',
+      details: ['Inscription: 15.000 Frcfa', '1 mois: 20.000 Frcfa/Mois'],
+    },
+    {
+      title: 'Formation Ingénieur du Son',
+      price: '200.000 Frcfa',
+      details: ['Inscription: 20.000 Frcfa', '6 mois: 30.000 Frcfa/Mois'],
+    },
+  ];
+
+  const handleFormationClick = (formation: Formation) => {
+    setSelectedFormation(formation);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedFormation(null);
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+      <Toaster position="top-right" richColors />
       <Navbar />
       <HeroSection />
       
@@ -53,32 +99,13 @@ export default function Home() {
             </h2>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              {
-                title: 'Formation Musicale',
-                price: '135.000 Frcfa',
-                details: ['Inscription: 15.000 Frcfa', '6 mois: 20.000 Frcfa/Mois'],
-              },
-              {
-                title: 'Formation Orchestration',
-                price: '30.000 Frcfa',
-                details: ['Inscription: 30.000 Frcfa', '1 Mois'],
-              },
-              {
-                title: 'Formation Solfège',
-                price: '95.000 Frcfa',
-                details: ['Inscription: 15.000 Frcfa', '1 mois: 20.000 Frcfa/Mois'],
-              },
-              {
-                title: 'Formation Ingénieur du Son',
-                price: '200.000 Frcfa',
-                details: ['Inscription: 20.000 Frcfa', '6 mois: 30.000 Frcfa/Mois'],
-              },
-            ].map((formation, index) => (
+            {formations.map((formation, index) => (
               <AnimatedSection key={index}>
                 <motion.div
                   whileHover={{ scale: 1.02 }}
-                  className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg p-8 border border-gray-800/50 hover:border-blue-500/50 transition-all duration-300"
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleFormationClick(formation)}
+                  className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-lg p-8 border border-gray-800/50 hover:border-blue-500/50 transition-all duration-300 cursor-pointer group"
                 >
                   <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                     {formation.title}
@@ -92,6 +119,15 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
+                  <div className="mt-6 pt-4 border-t border-gray-700/50">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      Demander cette formation
+                    </motion.button>
+                  </div>
                 </motion.div>
               </AnimatedSection>
             ))}
@@ -169,6 +205,13 @@ export default function Home() {
       </section>
 
       <Footer />
+
+      {/* Formation Modal */}
+      <FormationModal
+        formation={selectedFormation}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </main>
   );
 }
