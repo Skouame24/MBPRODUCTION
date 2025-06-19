@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     // Envoi de l'email avec un domaine par défaut de Resend
     const { data, error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'inscription@mbproduction.com',
       to: ['samuelkouame429@gmail.com'],
       subject: `🎓 Nouvelle demande: ${formation} - ${nom} ${prenom}`,
       html: htmlContent,
